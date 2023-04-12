@@ -113,8 +113,8 @@ RUN dnf install \
     libyaml-devel \
     libzstd-devel \
     $(if [ "$ROS_DISTRO" = "foxy" ]; then echo log4cxx-devel; fi) \
-    $(if test ${EL_RELEASE} != 8; then echo lttng-tools; fi) \
-    $(if test ${EL_RELEASE} != 8; then echo lttng-ust-devel; fi) \
+    lttng-tools \
+    lttng-ust-devel \
     mesa-libGL-devel \
     mesa-libGLU-devel \
     opencv-devel \
@@ -125,7 +125,7 @@ RUN dnf install \
     $(if test ${EL_RELEASE} != 8; then echo pybind11-devel; fi) \
     python3-PyYAML \
     python3-argcomplete \
-    $(if test ${EL_RELEASE} != 8; then echo python3-babeltrace; fi) \
+    python3-babeltrace \
     python3-cairo \
     python3-catkin_pkg \
     python3-cryptography \
@@ -135,7 +135,7 @@ RUN dnf install \
     python3-importlib-metadata \
     $(if test ${EL_RELEASE} = 8; then echo python3-importlib-resources; fi) \
     python3-lark-parser \
-    $(if test ${EL_RELEASE} != 8; then echo python3-lttng; fi) \
+    python3-lttng \
     python3-lxml \
     $(if test ${EL_RELEASE} != 9; then echo python3-matplotlib; fi) \
     $(if test ${EL_RELEASE} = 8; then echo python3-mock; fi) \
