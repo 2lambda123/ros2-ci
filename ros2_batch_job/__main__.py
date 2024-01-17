@@ -12,6 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from .util import UnbufferedIO
+from .util import log
+from .util import info
+from .util import generated_venv_vars
+from .util import force_color
+from .util import remove_folder
+from .util import change_directory
+from .packaging import build_and_test_and_package
+from osrf_pycommon.terminal_color import sanitize
+from osrf_pycommon.cli_utils.common import extract_argument_group
+import osrf_pycommon
 import argparse
 import importlib
 import os
@@ -22,27 +33,18 @@ import sys
 import time
 
 # Make sure we're using Python3
-assert sys.version.startswith('3'), "This script is only meant to work with Python3"
+assert sys.version.startswith(
+    '3'), "This script is only meant to work with Python3"
 
 # Make sure to get osrf_pycommon from the vendor folder
-vendor_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'vendor'))
+vendor_path = os.path.abspath(os.path.join(
+    os.path.dirname(__file__), 'vendor'))
 sys.path.insert(0, os.path.join(vendor_path, 'osrf_pycommon'))
-import osrf_pycommon
 # Assert that we got it from the right place
 assert osrf_pycommon.__file__.startswith(vendor_path), \
     ("osrf_pycommon imported from '{0}' which is not in the vendor folder '{1}'"
      .format(osrf_pycommon.__file__, vendor_path))
-from osrf_pycommon.cli_utils.common import extract_argument_group
-from osrf_pycommon.terminal_color import sanitize
 
-from .packaging import build_and_test_and_package
-from .util import change_directory
-from .util import remove_folder
-from .util import force_color
-from .util import generated_venv_vars
-from .util import info
-from .util import log
-from .util import UnbufferedIO
 
 # Enforce unbuffered output
 sys.stdout = UnbufferedIO(sys.stdout)
@@ -122,6 +124,7 @@ colcon_space_defaults = {
     'buildspace': 'build',
     'installspace': 'install',
 }
+
 
 def main(sysargv=None):
     args = get_args(sysargv=sysargv)
@@ -264,7 +267,8 @@ def get_args(sysargv=None):
     if '--test-args' in argv:
         argv, test_args = extract_argument_group(argv, '--test-args')
     else:
-        build_args, test_args = extract_argument_group(build_args, '--test-args')
+        build_args, test_args = extract_argument_group(
+            build_args, '--test-args')
     args = parser.parse_args(argv)
     args.build_args = build_args
     args.test_args = test_args
@@ -272,7 +276,8 @@ def get_args(sysargv=None):
     for name in ('sourcespace', 'buildspace', 'installspace'):
         space_directory = getattr(args, name)
         if name in args.white_space_in and space_directory is not None:
-            raise Exception('Argument {} and "--white-space-in" cannot both be used'.format(name))
+            raise Exception(
+                'Argument {} and "--white-space-in" cannot both be used'.format(name))
         elif space_directory is None:
             space_directory = colcon_space_defaults[name]
             if name in args.white_space_in:
@@ -381,7 +386,8 @@ def build_and_test(args, job):
         # We should only have one --pytest-args option, or some options might get ignored
         if '--pytest-args' in test_cmd:
             pytest_opts_index = test_cmd.index('--pytest-args') + 1
-            test_cmd = test_cmd[:pytest_opts_index] + pytest_args + test_cmd[pytest_opts_index:]
+            test_cmd = test_cmd[:pytest_opts_index] + \
+                pytest_args + test_cmd[pytest_opts_index:]
         else:
             test_cmd.append('--pytest-args')
             test_cmd.extend(pytest_args)
@@ -395,7 +401,8 @@ def build_and_test(args, job):
     print('# BEGIN SUBSECTION: test-result --all')
     # Collect the test results
     ret_test_results = job.run(
-        [args.colcon_script, 'test-result', '--test-result-base', '"%s"' % args.buildspace, '--all'],
+        [args.colcon_script, 'test-result', '--test-result-base', '"%s"' %
+            args.buildspace, '--all'],
         exit_on_error=False, shell=True
     )
     info("colcon test-result returned: '{0}'".format(ret_test_results))
@@ -404,7 +411,8 @@ def build_and_test(args, job):
     print('# BEGIN SUBSECTION: test-result')
     # Collect the test results
     ret_test_results = job.run(
-        [args.colcon_script, 'test-result', '--test-result-base', '"%s"' % args.buildspace],
+        [args.colcon_script, 'test-result',
+            '--test-result-base', '"%s"' % args.buildspace],
         exit_on_error=False, shell=True
     )
     info("colcon test-result returned: '{0}'".format(ret_test_results))
@@ -492,7 +500,8 @@ def run(args, build_function, blacklisted_package_names=None):
             # Do not try this on Linux as elevated privileges are needed.
             # The Linux host or Docker image will need to ensure the right
             # version of virtualenv is available.
-            job.run([sys.executable, '-m', 'pip', 'install', '-U', 'virtualenv==16.7.9'])
+            job.run([sys.executable, '-m', 'pip',
+                    'install', '-U', 'virtualenv==16.7.9'])
 
         venv_subfolder = 'venv'
         remove_folder(venv_subfolder)
@@ -562,7 +571,8 @@ def run(args, build_function, blacklisted_package_names=None):
 
             if args.cmake_build_type == 'Debug':
                 pip_packages += [
-                    'https://github.com/ros2/ros2/releases/download/cryptography-archives/cffi-1.14.0-cp38-cp38d-win_amd64.whl',  # required by cryptography
+                    # required by cryptography
+                    'https://github.com/ros2/ros2/releases/download/cryptography-archives/cffi-1.14.0-cp38-cp38d-win_amd64.whl',
                     'https://github.com/ros2/ros2/releases/download/cryptography-archives/cryptography-2.9.2-cp38-cp38d-win_amd64.whl',
                     'https://github.com/ros2/ros2/releases/download/lxml-archives/lxml-4.5.1-cp38-cp38d-win_amd64.whl',
                     'https://github.com/ros2/ros2/releases/download/netifaces-archives/netifaces-0.10.9-cp38-cp38d-win_amd64.whl',
@@ -589,7 +599,8 @@ def run(args, build_function, blacklisted_package_names=None):
         with open('constraints.txt', 'w') as outfp:
             outfp.write('flake8 < 5.0.0\n')
 
-        pip_cmd = ['"%s"' % job.python, '-m', 'pip', 'install', '-c', 'constraints.txt', '-U']
+        pip_cmd = ['"%s"' % job.python, '-m', 'pip',
+                   'install', '-c', 'constraints.txt', '-U']
         if args.do_venv or sys.platform == 'win32':
             # Force reinstall so all dependencies are in virtual environment
             # On Windows since we switch between the debug and non-debug
@@ -644,15 +655,19 @@ def run(args, build_function, blacklisted_package_names=None):
             colcon_script = which('colcon')
         args.colcon_script = colcon_script
         # Show what pip has
-        job.run(['"%s"' % job.python, '-m', 'pip', 'freeze', '--all'], shell=True)
+        job.run(['"%s"' % job.python, '-m', 'pip',
+                'freeze', '--all'], shell=True)
         print('# END SUBSECTION')
 
         # Fetch colcon mixins
         if args.colcon_mixin_url:
             true_cmd = 'VER>NUL' if sys.platform == 'win32' else 'true'
-            job.run([args.colcon_script, 'mixin', 'remove', 'default', '||', true_cmd], shell=True)
-            job.run([args.colcon_script, 'mixin', 'add', 'default', args.colcon_mixin_url], shell=True)
-            job.run([args.colcon_script, 'mixin', 'update', 'default'], shell=True)
+            job.run([args.colcon_script, 'mixin', 'remove',
+                    'default', '||', true_cmd], shell=True)
+            job.run([args.colcon_script, 'mixin', 'add',
+                    'default', args.colcon_mixin_url], shell=True)
+            job.run([args.colcon_script, 'mixin',
+                    'update', 'default'], shell=True)
 
         # Skip git operations on arm because git doesn't work in qemu. Assume
         # that somebody has already pulled the code on the host and mounted it
@@ -664,7 +679,8 @@ def run(args, build_function, blacklisted_package_names=None):
                 repos_file_urls.append(args.supplemental_repo_file_url)
             repos_filenames = []
             for index, repos_file_url in enumerate(repos_file_urls):
-                repos_filename = '{0:02d}-{1}'.format(index, os.path.basename(repos_file_url))
+                repos_filename = '{0:02d}-{1}'.format(
+                    index, os.path.basename(repos_file_url))
                 _fetch_repos_file(repos_file_url, repos_filename, job)
                 repos_filenames.append(repos_filename)
             # Use the repository listing and vcstool to fetch repositories
@@ -678,8 +694,10 @@ def run(args, build_function, blacklisted_package_names=None):
             if args.test_branch is not None:
                 print('# BEGIN SUBSECTION: checkout custom branch')
                 # Store current branch as well-known branch name for later rebasing
-                info('Attempting to create a well known branch name for all the default branches')
-                job.run(vcs_cmd + ['custom', '.', '--git', '--args', 'checkout', '-b', '__ci_default'])
+                info(
+                    'Attempting to create a well known branch name for all the default branches')
+                job.run(vcs_cmd + ['custom', '.', '--git',
+                        '--args', 'checkout', '-b', '__ci_default'])
 
                 # Attempt to switch all the repositories to a given branch
                 info("Attempting to switch all repositories to the '{0}' branch"
@@ -689,22 +707,26 @@ def run(args, build_function, blacklisted_package_names=None):
                     'custom', '.', '--args', 'checkout',
                     '-b', args.test_branch, '--track', 'origin/' + args.test_branch]
                 ret = job.run(vcs_custom_cmd, exit_on_error=False)
-                info("'{0}' returned exit code '{1}'", fargs=(" ".join(vcs_custom_cmd), ret))
+                info("'{0}' returned exit code '{1}'",
+                     fargs=(" ".join(vcs_custom_cmd), ret))
                 print()
 
                 # Attempt to merge the __ci_default branch into the branch.
                 # This is to ensure that the changes on the branch still work
                 # when applied to the latest version of the default branch.
                 info("Attempting to merge all repositories to the '__ci_default' branch")
-                vcs_custom_cmd = vcs_cmd + ['custom', '.', '--git', '--args', 'merge', '__ci_default']
+                vcs_custom_cmd = vcs_cmd + \
+                    ['custom', '.', '--git', '--args', 'merge', '__ci_default']
                 ret = job.run(vcs_custom_cmd)
-                info("'{0}' returned exit code '{1}'", fargs=(" ".join(vcs_custom_cmd), ret))
+                info("'{0}' returned exit code '{1}'",
+                     fargs=(" ".join(vcs_custom_cmd), ret))
                 print()
                 print('# END SUBSECTION')
 
             print('# BEGIN SUBSECTION: repository hashes')
             # Show the latest commit log on each repository (includes the commit hash).
-            job.run(vcs_cmd + ['log', '-l1', '"%s"' % args.sourcespace], shell=True)
+            job.run(vcs_cmd + ['log', '-l1', '"%s"' %
+                    args.sourcespace], shell=True)
             print('# END SUBSECTION')
 
             print('# BEGIN SUBSECTION: vcs export --exact')
@@ -761,7 +783,7 @@ def run(args, build_function, blacklisted_package_names=None):
             'rmw_fastrtps_dynamic_cpp' in args.ignore_rmw and
             # TODO(asorbini) Ideally `rmw_connextdds` would only depend on `fastcdr`
             # via `rosidl_typesupport_fastrtps_c[pp]`, but they depend on `fastrtps`.
-            'rmw_connextdds' in args.ignore_rmw):
+                'rmw_connextdds' in args.ignore_rmw):
             blacklisted_package_names += [
                 'fastrtps',
                 'fastrtps_cmake_module',
@@ -803,6 +825,7 @@ def _fetch_repos_file(url, filename, job):
     log("@{bf}==>@| Contents of `%s`:" % filename)
     with open(filename, 'r') as f:
         print(f.read())
+
 
 if __name__ == '__main__':
     sys.exit(main())
