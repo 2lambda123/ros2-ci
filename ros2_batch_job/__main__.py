@@ -78,6 +78,7 @@ pip_dependencies = [
     'pytest-runner',
     'pyyaml',
     'vcstool',
+    'wheel',
     'yamllint',
 ]
 # https://github.com/pyca/cryptography/issues/5433
@@ -95,6 +96,7 @@ colcon_packages = [
     'colcon-parallel-executor',
     'colcon-pkg-config',
     'colcon-powershell',
+    'colcon-python-project',
     'colcon-python-setup-py',
     'colcon-recursive-crawl',
     'colcon-test-result',
@@ -189,7 +191,7 @@ def get_args(sysargv=None):
         '--test-branch', default=None,
         help="branch to attempt to checkout before doing batch job")
     parser.add_argument(
-        '--colcon-branch', default=None,
+        '--colcon-branch', default='devel',
         help='Use a specific branch of the colcon repositories, if the branch '
              "doesn't exist fall back to the default branch (default: latest "
              'release)')
