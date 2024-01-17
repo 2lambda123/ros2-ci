@@ -12,25 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .util import UnbufferedIO
-from .util import log
-from .util import info
-from .util import generated_venv_vars
-from .util import force_color
-from .util import remove_folder
-from .util import change_directory
-from .packaging import build_and_test_and_package
-from osrf_pycommon.terminal_color import sanitize
-from osrf_pycommon.cli_utils.common import extract_argument_group
-import osrf_pycommon
 import argparse
 import importlib
 import os
 import platform
-from shutil import which
 import subprocess
 import sys
 import time
+from shutil import which
+
+import osrf_pycommon
+from osrf_pycommon.cli_utils.common import extract_argument_group
+from osrf_pycommon.terminal_color import sanitize
+
+from .packaging import build_and_test_and_package
+from .util import (UnbufferedIO, change_directory, force_color,
+                   generated_venv_vars, info, log, remove_folder)
 
 # Make sure we're using Python3
 assert sys.version.startswith("3"), "This script is only meant to work with Python3"
