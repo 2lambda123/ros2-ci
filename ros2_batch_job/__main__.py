@@ -316,8 +316,8 @@ def get_args(sysargv=None):
 def process_coverage(args, job):
     """
 
-    :param args: 
-    :param job: 
+    :param args:
+    :param job:
 
     """
     print("# BEGIN SUBSECTION: coverage analysis")
@@ -397,8 +397,8 @@ def process_coverage(args, job):
 def build_and_test(args, job):
     """
 
-    :param args: 
-    :param job: 
+    :param args:
+    :param job:
 
     """
     compile_with_clang = args.compile_with_clang and args.os == "linux"
@@ -520,8 +520,8 @@ def build_and_test(args, job):
 def run(args, build_function, blacklisted_package_names=None):
     """
 
-    :param args: 
-    :param build_function: 
+    :param args:
+    :param build_function:
     :param blacklisted_package_names:  (Default value = None)
 
     """
@@ -963,9 +963,9 @@ def run(args, build_function, blacklisted_package_names=None):
 def _fetch_repos_file(url, filename, job):
     """Use curl to fetch a repos file and display the contents.
 
-    :param url: 
-    :param filename: 
-    :param job: 
+    :param url:
+    :param filename:
+    :param job:
 
     """
 
