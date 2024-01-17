@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import argparse
 import os
 import platform
@@ -25,8 +24,13 @@ from osrf_pycommon.cli_utils.common import extract_argument_group
 from osrf_pycommon.terminal_color import sanitize
 
 from .packaging import build_and_test_and_package
-from .util import (UnbufferedIO, change_directory, force_color,
-                   generated_venv_vars, info, log, remove_folder)
+from .util import change_directory
+from .util import force_color
+from .util import generated_venv_vars
+from .util import info
+from .util import log
+from .util import remove_folder
+from .util import UnbufferedIO
 
 # Make sure we're using Python3
 assert sys.version.startswith("3"), "This script is only meant to work with Python3"
