@@ -106,6 +106,11 @@ gcov_flags = "--coverage"
 
 
 def main(sysargv=None):
+    """
+
+    :param sysargv:  (Default value = None)
+
+    """
     args = get_args(sysargv=sysargv)
     blacklisted_package_names = []
     if not args.packaging:
@@ -164,6 +169,11 @@ def main(sysargv=None):
 
 
 def get_args(sysargv=None):
+    """
+
+    :param sysargv:  (Default value = None)
+
+    """
     parser = argparse.ArgumentParser(
         description="Builds the ROS2 repositories as a single batch job"
     )
@@ -300,6 +310,12 @@ def get_args(sysargv=None):
 
 
 def process_coverage(args, job):
+    """
+
+    :param args: 
+    :param job: 
+
+    """
     print("# BEGIN SUBSECTION: coverage analysis")
     # Collect all .gcda files in args.workspace
     output = subprocess.check_output(
@@ -375,6 +391,12 @@ def process_coverage(args, job):
 
 
 def build_and_test(args, job):
+    """
+
+    :param args: 
+    :param job: 
+
+    """
     compile_with_clang = args.compile_with_clang and args.os == "linux"
 
     print("# BEGIN SUBSECTION: build")
@@ -492,6 +514,13 @@ def build_and_test(args, job):
 
 
 def run(args, build_function, blacklisted_package_names=None):
+    """
+
+    :param args: 
+    :param build_function: 
+    :param blacklisted_package_names:  (Default value = None)
+
+    """
     if blacklisted_package_names is None:
         blacklisted_package_names = []
     if args.force_ansi_color:
@@ -928,7 +957,13 @@ def run(args, build_function, blacklisted_package_names=None):
 
 
 def _fetch_repos_file(url, filename, job):
-    """Use curl to fetch a repos file and display the contents."""
+    """Use curl to fetch a repos file and display the contents.
+
+    :param url: 
+    :param filename: 
+    :param job: 
+
+    """
 
     job.run(["curl", "-skL", url, "-o", filename])
     log("@{bf}==>@| Contents of `%s`:" % filename)
