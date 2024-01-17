@@ -33,18 +33,18 @@ from .util import remove_folder
 from .util import UnbufferedIO
 
 # Make sure we're using Python3
-assert sys.version.startswith("3"), "This script is only meant to work with Python3"
+assert sys.version.startswith(
+    "3"), "This script is only meant to work with Python3"
 
 # Make sure to get osrf_pycommon from the vendor folder
-vendor_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "vendor"))
+vendor_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                           "vendor"))
 sys.path.insert(0, os.path.join(vendor_path, "osrf_pycommon"))
 # Assert that we got it from the right place
 assert osrf_pycommon.__file__.startswith(
     vendor_path
 ), "osrf_pycommon imported from '{0}' which is not in the vendor folder '{1}'".format(
-    osrf_pycommon.__file__, vendor_path
-)
-
+    osrf_pycommon.__file__, vendor_path)
 
 # Enforce unbuffered output
 sys.stdout = UnbufferedIO(sys.stdout)
@@ -149,10 +149,8 @@ def main(sysargv=None):
         blacklisted_package_names.append("rqt_py_common")
         blacklisted_package_names.append("rqt_reconfigure")
 
-    if (
-        sys.platform.lower().startswith("linux")
-        and platform.linux_distribution()[2] == "xenial"
-    ):
+    if (sys.platform.lower().startswith("linux")
+            and platform.linux_distribution()[2] == "xenial"):
         blacklisted_package_names += [
             "image_tools_py",
             "qt_dotgraph",
@@ -167,9 +165,9 @@ def main(sysargv=None):
         os.system("taskkill /f /im colcon.exe")
         time.sleep(2)  # wait a bit to avoid a race
 
-    return run(
-        args, build_function, blacklisted_package_names=blacklisted_package_names
-    )
+    return run(args,
+               build_function,
+               blacklisted_package_names=blacklisted_package_names)
 
 
 def get_args(sysargv=None):
@@ -179,8 +177,7 @@ def get_args(sysargv=None):
 
     """
     parser = argparse.ArgumentParser(
-        description="Builds the ROS2 repositories as a single batch job"
-    )
+        description="Builds the ROS2 repositories as a single batch job")
     parser.add_argument(
         "--packaging",
         default=False,
@@ -190,7 +187,8 @@ def get_args(sysargv=None):
     parser.add_argument(
         "--repo-file-url",
         required=True,
-        help="url of the ros2.repos file to fetch and use for the basis of the batch job",
+        help=
+        "url of the ros2.repos file to fetch and use for the basis of the batch job",
     )
     parser.add_argument(
         "--supplemental-repo-file-url",
@@ -222,18 +220,22 @@ def get_args(sysargv=None):
         action="store_true",
         help="create and use a virtual env in the build process",
     )
-    parser.add_argument("--os", default=None, choices=["linux", "osx", "windows"])
+    parser.add_argument("--os",
+                        default=None,
+                        choices=["linux", "osx", "windows"])
     parser.add_argument(
         "--ignore-rmw",
         nargs="*",
         default=[],
-        help="ignore the passed RMW implementations as well as supporting packages",
+        help=
+        "ignore the passed RMW implementations as well as supporting packages",
     )
     parser.add_argument(
         "--connext-debs",
         default=False,
         action="store_true",
-        help="use Debian packages for Connext instead of binaries off the RTI website (Linux only)",
+        help=
+        "use Debian packages for Connext instead of binaries off the RTI website (Linux only)",
     )
     parser.add_argument(
         "--isolated",
@@ -247,29 +249,30 @@ def get_args(sysargv=None):
         action="store_true",
         help="forces this program to output ansi color",
     )
-    parser.add_argument(
-        "--ros1-path", default=None, help="path of ROS 1 workspace to be sourced"
-    )
+    parser.add_argument("--ros1-path",
+                        default=None,
+                        help="path of ROS 1 workspace to be sourced")
     parser.add_argument(
         "--mixed-ros-overlay-pkgs",
         nargs="*",
         default=[],
-        help="space separated list of packages to be built in an overlay workspace with ROS 1",
+        help=
+        "space separated list of packages to be built in an overlay workspace with ROS 1",
     )
     parser.add_argument(
         "--colcon-mixin-url",
         default=None,
         help="A mixin index url to be included by colcon",
     )
-    parser.add_argument(
-        "--cmake-build-type", default=None, help="select the CMake build type"
-    )
-    parser.add_argument(
-        "--build-args", default=None, help="arguments passed to the 'build' verb"
-    )
-    parser.add_argument(
-        "--test-args", default=None, help="arguments passed to the 'test' verb"
-    )
+    parser.add_argument("--cmake-build-type",
+                        default=None,
+                        help="select the CMake build type")
+    parser.add_argument("--build-args",
+                        default=None,
+                        help="arguments passed to the 'build' verb")
+    parser.add_argument("--test-args",
+                        default=None,
+                        help="arguments passed to the 'test' verb")
     parser.add_argument(
         "--src-mounted",
         default=False,
@@ -288,12 +291,12 @@ def get_args(sysargv=None):
         action="store_true",
         help="enable collection of coverage statistics",
     )
-    parser.add_argument(
-        "--workspace-path", default=None, help="base path of the workspace"
-    )
-    parser.add_argument(
-        "--python-interpreter", default=None, help="pass different Python interpreter"
-    )
+    parser.add_argument("--workspace-path",
+                        default=None,
+                        help="base path of the workspace")
+    parser.add_argument("--python-interpreter",
+                        default=None,
+                        help="pass different Python interpreter")
     parser.add_argument(
         "--visual-studio-version",
         default=None,
@@ -306,7 +309,8 @@ def get_args(sysargv=None):
     if "--test-args" in argv:
         argv, test_args = extract_argument_group(argv, "--test-args")
     else:
-        build_args, test_args = extract_argument_group(build_args, "--test-args")
+        build_args, test_args = extract_argument_group(build_args,
+                                                       "--test-args")
     args = parser.parse_args(argv)
     args.build_args = build_args
     args.test_args = test_args
@@ -323,21 +327,17 @@ def process_coverage(args, job):
     print("# BEGIN SUBSECTION: coverage analysis")
     # Collect all .gcda files in args.workspace
     output = subprocess.check_output(
-        [args.colcon_script, "list", "--base-paths", args.sourcespace]
-    )
+        [args.colcon_script, "list", "--base-paths", args.sourcespace])
     for line in output.decode().splitlines():
         package_name, package_path, _ = line.split("\t", 2)
         print(package_name)
         package_build_path = os.path.join(args.buildspace, package_name)
         gcda_files = []
         for root, dirs, files in os.walk(package_build_path):
-            gcda_files.extend(
-                [
-                    os.path.abspath(os.path.join(root, f))
-                    for f in files
-                    if f.endswith(".gcda")
-                ]
-            )
+            gcda_files.extend([
+                os.path.abspath(os.path.join(root, f)) for f in files
+                if f.endswith(".gcda")
+            ])
         if len(gcda_files) == 0:
             continue
 
@@ -354,7 +354,8 @@ def process_coverage(args, job):
 
         # Write one report for the entire package.
         # cobertura plugin looks for files of the regex *coverage.xml
-        outfile = os.path.join(package_build_path, package_name + ".coverage.xml")
+        outfile = os.path.join(package_build_path,
+                               package_name + ".coverage.xml")
         print("Writing coverage.xml report at path {}".format(outfile))
         # -e /usr  Ignore files from /usr
         # -xml  Output cobertura xml
@@ -404,34 +405,28 @@ def build_and_test(args, job):
     compile_with_clang = args.compile_with_clang and args.os == "linux"
 
     print("# BEGIN SUBSECTION: build")
-    cmd = (
-        [
-            args.colcon_script,
-            "build",
-            "--base-paths",
-            '"%s"' % args.sourcespace,
-            "--build-base",
-            '"%s"' % args.buildspace,
-            "--install-base",
-            '"%s"' % args.installspace,
-        ]
-        + (["--merge-install"] if not args.isolated else [])
-        + args.build_args
-    )
+    cmd = ([
+        args.colcon_script,
+        "build",
+        "--base-paths",
+        '"%s"' % args.sourcespace,
+        "--build-base",
+        '"%s"' % args.buildspace,
+        "--install-base",
+        '"%s"' % args.installspace,
+    ] + (["--merge-install"] if not args.isolated else []) + args.build_args)
 
     cmake_args = ["-DBUILD_TESTING=ON", "--no-warn-unused-cli"]
     if args.cmake_build_type:
         cmake_args.append("-DCMAKE_BUILD_TYPE=" + args.cmake_build_type)
     if compile_with_clang:
-        cmake_args.extend(
-            [
-                "-DCMAKE_C_COMPILER=/usr/bin/clang",
-                "-DCMAKE_CXX_COMPILER=/usr/bin/clang++",
-            ]
-        )
+        cmake_args.extend([
+            "-DCMAKE_C_COMPILER=/usr/bin/clang",
+            "-DCMAKE_CXX_COMPILER=/usr/bin/clang++",
+        ])
     if "--cmake-args" in cmd:
         index = cmd.index("--cmake-args")
-        cmd[index + 1 : index + 1] = cmake_args
+        cmd[index + 1:index + 1] = cmake_args
     else:
         cmd.append("--cmake-args")
         cmd.extend(cmake_args)
@@ -444,7 +439,7 @@ def build_and_test(args, job):
             ]
             if "--ament-cmake-args" in cmd:
                 index = cmd.index("--ament-cmake-args")
-                cmd[index + 1 : index + 1] = ament_cmake_args
+                cmd[index + 1:index + 1] = ament_cmake_args
             else:
                 cmd.append("--ament-cmake-args")
                 cmd.extend(ament_cmake_args)
@@ -540,9 +535,8 @@ def run(args, build_function, blacklisted_package_names=None):
     args.workspace = "work space" if "workspace" in args.white_space_in else "ws"
     args.sourcespace = "source space" if "sourcespace" in args.white_space_in else "src"
     args.buildspace = "build space" if "buildspace" in args.white_space_in else "build"
-    args.installspace = (
-        "install space" if "installspace" in args.white_space_in else "install"
-    )
+    args.installspace = ("install space" if "installspace"
+                         in args.white_space_in else "install")
 
     platform_name = platform.platform().lower()
     if args.os == "linux" or platform_name.startswith("linux"):
@@ -577,7 +571,7 @@ def run(args, build_function, blacklisted_package_names=None):
     os.environ["GIT_COMMITTER_EMAIL"] = "nobody@osrfoundation.org"
     os.environ["GIT_COMMITTER_NAME"] = "nobody"
 
-    info("Using workspace: @!{0}", fargs=(args.workspace,))
+    info("Using workspace: @!{0}", fargs=(args.workspace, ))
     # git doesn't work reliably inside qemu, so we're assuming that somebody
     # already checked out the code on the host and mounted it in at the right
     # place in <workspace>/src, which we don't want to remove here.
@@ -610,21 +604,20 @@ def run(args, build_function, blacklisted_package_names=None):
             # Also there is no good way to get elevated privileges.
             # So the Linux host or Docker vm will need to ensure a modern
             # version of virtualenv is available.
-            job.run([sys.executable, "-m", "pip", "install", "-U", "virtualenv"])
+            job.run(
+                [sys.executable, "-m", "pip", "install", "-U", "virtualenv"])
 
         venv_subfolder = "venv"
         remove_folder(venv_subfolder)
-        job.run(
-            [
-                sys.executable,
-                "-m",
-                "virtualenv",
-                "--system-site-packages",
-                "-p",
-                sys.executable,
-                venv_subfolder,
-            ]
-        )
+        job.run([
+            sys.executable,
+            "-m",
+            "virtualenv",
+            "--system-site-packages",
+            "-p",
+            sys.executable,
+            venv_subfolder,
+        ])
         venv_path = os.path.abspath(os.path.join(os.getcwd(), venv_subfolder))
         venv, venv_python = generated_venv_vars(venv_path)
         job.push_run(venv)  # job.run is now venv
@@ -637,7 +630,10 @@ def run(args, build_function, blacklisted_package_names=None):
         print("# BEGIN SUBSECTION: install Python packages")
         # Update setuptools
         job.run(
-            ['"%s"' % job.python, "-m", "pip", "install", "-U", "pip", "setuptools"],
+            [
+                '"%s"' % job.python, "-m", "pip", "install", "-U", "pip",
+                "setuptools"
+            ],
             shell=True,
         )
         # Print setuptools version
@@ -674,13 +670,14 @@ def run(args, build_function, blacklisted_package_names=None):
             pip_packages += colcon_packages
         if sys.platform == "win32":
             job.run(
-                ['"%s"' % job.python, "-m", "pip", "uninstall", "-y"] + colcon_packages,
+                ['"%s"' % job.python, "-m", "pip", "uninstall", "-y"] +
+                colcon_packages,
                 shell=True,
             )
             # to ensure that the build type specific package is installed
             job.run(
-                ['"%s"' % job.python, "-m", "pip", "uninstall", "-y"]
-                + ["cryptography", "lxml", "numpy"],
+                ['"%s"' % job.python, "-m", "pip", "uninstall", "-y"] +
+                ["cryptography", "lxml", "numpy"],
                 shell=True,
             )
         pip_cmd = ['"%s"' % job.python, "-m", "pip", "install", "-U"]
@@ -709,11 +706,11 @@ def run(args, build_function, blacklisted_package_names=None):
                 for name in colcon_packages:
                     h.write("  %s:\n" % name)
                     h.write("    type: git\n")
-                    h.write("    url: https://github.com/colcon/%s.git\n" % name)
+                    h.write("    url: https://github.com/colcon/%s.git\n" %
+                            name)
             # clone default branches
             job.run(
-                vcs_cmd
-                + [
+                vcs_cmd + [
                     "import",
                     "colcon",
                     "--force",
@@ -727,8 +724,7 @@ def run(args, build_function, blacklisted_package_names=None):
             # use -b and --track to checkout correctly when file/folder
             # with the same name exists
             job.run(
-                vcs_cmd
-                + [
+                vcs_cmd + [
                     "custom",
                     "colcon",
                     "--args",
@@ -742,8 +738,8 @@ def run(args, build_function, blacklisted_package_names=None):
             )
             # install colcon packages from local working copies
             job.run(
-                ['"%s"' % job.python, "-m", "pip", "install", "-U"]
-                + ["colcon/%s" % name for name in colcon_packages],
+                ['"%s"' % job.python, "-m", "pip", "install", "-U"] +
+                ["colcon/%s" % name for name in colcon_packages],
                 shell=True,
             )
 
@@ -760,14 +756,21 @@ def run(args, build_function, blacklisted_package_names=None):
         if args.colcon_mixin_url:
             true_cmd = "VER>NUL" if sys.platform == "win32" else "true"
             job.run(
-                [args.colcon_script, "mixin", "remove", "default", "||", true_cmd],
+                [
+                    args.colcon_script, "mixin", "remove", "default", "||",
+                    true_cmd
+                ],
                 shell=True,
             )
             job.run(
-                [args.colcon_script, "mixin", "add", "default", args.colcon_mixin_url],
+                [
+                    args.colcon_script, "mixin", "add", "default",
+                    args.colcon_mixin_url
+                ],
                 shell=True,
             )
-            job.run([args.colcon_script, "mixin", "update", "default"], shell=True)
+            job.run([args.colcon_script, "mixin", "update", "default"],
+                    shell=True)
 
         # Skip git operations on arm because git doesn't work in qemu. Assume
         # that somebody has already pulled the code on the host and mounted it
@@ -780,8 +783,7 @@ def run(args, build_function, blacklisted_package_names=None):
             repos_filenames = []
             for index, repos_file_url in enumerate(repos_file_urls):
                 repos_filename = "{0:02d}-{1}".format(
-                    index, os.path.basename(repos_file_url)
-                )
+                    index, os.path.basename(repos_file_url))
                 _fetch_repos_file(repos_file_url, repos_filename, job)
                 repos_filenames.append(repos_filename)
             # Use the repository listing and vcstool to fetch repositories
@@ -789,8 +791,7 @@ def run(args, build_function, blacklisted_package_names=None):
                 os.makedirs(args.sourcespace)
             for filename in repos_filenames:
                 job.run(
-                    vcs_cmd
-                    + [
+                    vcs_cmd + [
                         "import",
                         '"%s"' % args.sourcespace,
                         "--force",
@@ -809,25 +810,20 @@ def run(args, build_function, blacklisted_package_names=None):
                 info(
                     "Attempting to create a well known branch name for all the default branches"
                 )
-                job.run(
-                    vcs_cmd
-                    + [
-                        "custom",
-                        ".",
-                        "--git",
-                        "--args",
-                        "checkout",
-                        "-b",
-                        "__ci_default",
-                    ]
-                )
+                job.run(vcs_cmd + [
+                    "custom",
+                    ".",
+                    "--git",
+                    "--args",
+                    "checkout",
+                    "-b",
+                    "__ci_default",
+                ])
 
                 # Attempt to switch all the repositories to a given branch
                 info(
-                    "Attempting to switch all repositories to the '{0}' branch".format(
-                        args.test_branch
-                    )
-                )
+                    "Attempting to switch all repositories to the '{0}' branch"
+                    .format(args.test_branch))
                 # use -b and --track to checkout correctly when file/folder with the same name exists
                 vcs_custom_cmd = vcs_cmd + [
                     "custom",
@@ -870,13 +866,16 @@ def run(args, build_function, blacklisted_package_names=None):
 
             print("# BEGIN SUBSECTION: repository hashes")
             # Show the latest commit log on each repository (includes the commit hash).
-            job.run(vcs_cmd + ["log", "-l1", '"%s"' % args.sourcespace], shell=True)
+            job.run(vcs_cmd +
+                    ["log", "-l1", '"%s"' % args.sourcespace],
+                    shell=True)
             print("# END SUBSECTION")
 
             print("# BEGIN SUBSECTION: vcs export --exact")
             # Show the output of 'vcs export --exact`
             job.run(
-                vcs_cmd + ["export", "--exact", '"%s"' % args.sourcespace],
+                vcs_cmd + ["export", "--exact",
+                           '"%s"' % args.sourcespace],
                 shell=True,
                 # if a repo has been rebased against the default branch vcs can't detect the remote
                 exit_on_error=False,
@@ -916,10 +915,8 @@ def run(args, build_function, blacklisted_package_names=None):
             blacklisted_package_names += [
                 "rmw_fastrtps_dynamic_cpp",
             ]
-        if (
-            "rmw_fastrtps_cpp" in args.ignore_rmw
-            and "rmw_fastrtps_dynamic_cpp" in args.ignore_rmw
-        ):
+        if ("rmw_fastrtps_cpp" in args.ignore_rmw
+                and "rmw_fastrtps_dynamic_cpp" in args.ignore_rmw):
             blacklisted_package_names += [
                 "fastcdr",
                 "fastrtps",
@@ -943,8 +940,7 @@ def run(args, build_function, blacklisted_package_names=None):
             print("Trying to ignore the following packages:")
             [print("- " + name) for name in blacklisted_package_names]
             output = subprocess.check_output(
-                [colcon_script, "list", "--base-paths", args.sourcespace]
-            )
+                [colcon_script, "list", "--base-paths", args.sourcespace])
             for line in output.decode().splitlines():
                 package_name, package_path, _ = line.split("\t", 2)
                 if package_name in blacklisted_package_names:
